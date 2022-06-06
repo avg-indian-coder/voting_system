@@ -17,7 +17,7 @@ typedef struct Candidate
 }candidate;
 
 char password[20];
-char ll[100][1000];
+char ll[100][100];
 int num_voters,num_candidates;
 int admin_f=0,voter_f=0;
 candidate *candidates;
@@ -86,6 +86,7 @@ void VotingMode()
     char ch;
     system("cls");
     printf("\n");
+    int cc=0;
     for(int no=0;no<num_voters;no++)
     {
         system("cls");
@@ -98,31 +99,13 @@ void VotingMode()
         }
         printf("Your vote here: ");
         scanf("%d",&voters[no].vote);
-        printf("Press Y to confirm vote, or n to redo vote: ");
-        fflush(stdin);
-        scanf("%c",&ch);
-        if(ch=='n')
-        {
-            no--;
-            continue;
-        }
-        else 
-        {
-            candidates[voters[no].vote-1].number++;
-            int ii=0;
-            while(ll[ii][]!="\0"){
-                ii++;
-            }
-            for(int ij=0;ij<strlen(voters[no].name);ij++)
-            {
-                ll[ii][ij]=voters[no].name[ij];
-            }
-            for(int ij=0;ij<strlen(voters[no].name);ij++)
-            {
-                ll[ii+1][ij]=candidates[voters[no].vote-1].name[ij];
-            }
-            
-        }
+        printf("%s",voters[no].name);
+        printf("%s",candidates[voters[no].vote-1].name);
+        strcpy(ll[cc],voters[no].name);
+        strcpy(ll[cc+1],candidates[voters[no].vote-1].name);
+        cc=cc+2;
+        candidates[voters[no].vote-1].number++;
+
     }
     voter_f=1;
     system("cls");
@@ -145,10 +128,11 @@ void DisplayResults()
 void DV()
 {
     int jj=0;
-    while(ll[jj]!="\0")
+    while(ll[jj])
     {
-        printf("%s",ll[jj]);
-        if(jj%2==1) printf("\n");
+        printf("%s  ",ll[jj]);
+        ++jj;
+        if((jj%2)==0) printf("\n");
     }
 }
 void main()
@@ -168,7 +152,7 @@ void main()
             break;
             case 2:
             if(admin_f) VotingMode();
-            else 
+            else
             {
                 printf("Admin not initialized!");
                 fflush(stdin);
@@ -178,7 +162,7 @@ void main()
             break;
             case 3:
             if(admin_f && voter_f) DisplayResults();
-            else 
+            else
             {
                 printf("Admin or voting not done!");
                 fflush(stdin);
@@ -188,7 +172,7 @@ void main()
             break;
             case 4:
             if(admin_f && voter_f) DV();
-            else 
+            else
             {
                 printf("Admin or voting not done!");
                 fflush(stdin);
