@@ -60,6 +60,7 @@ void AdminMode()
         printf("\nEnter voting candidates:\n");
         for(int i=1;i<=num_candidates;i++)
         {
+    
             printf("%d. ",i);
             fflush(stdin);
             scanf("%[^\n]s",candidates[i-1].name);
@@ -99,13 +100,19 @@ void VotingMode()
         }
         printf("Your vote here: ");
         scanf("%d",&voters[no].vote);
-        printf("%s",voters[no].name);
-        printf("%s",candidates[voters[no].vote-1].name);
-        strcpy(ll[cc],voters[no].name);
-        strcpy(ll[cc+1],candidates[voters[no].vote-1].name);
+        printf("Press Y to confirm vote, or n to redo vote: ");
+        fflush(stdin);
+        scanf("%c",&ch);
+        if(ch=='n')
+        {
+            no--;
+            continue;
+        }
+        else candidates[voters[no].vote-1].number++;
+        
+        //strcpy(ll[cc],voters[no].name);
+        //strcpy(ll[cc+1],candidates[voters[no].vote-1].name);
         cc=cc+2;
-        candidates[voters[no].vote-1].number++;
-
     }
     voter_f=1;
     system("cls");
@@ -113,6 +120,7 @@ void VotingMode()
 
 void DisplayResults()
 {
+    char ch;
     system("cls");
     for(int i=0;i<num_candidates;i++)
     {
@@ -121,20 +129,26 @@ void DisplayResults()
     printf("\n");
     fflush(stdin);
     printf("Press any key to continue ");
-    scanf("%c");
+    scanf("%c",&ch);
     system("cls");
 }
 
 void DV()
 {
-    int jj=0;
+    /*int jj=0;
     while(ll[jj])
     {
         printf("%s  ",ll[jj]);
         ++jj;
         if((jj%2)==0) printf("\n");
+    }*/
+    for(int i=1;i<=num_candidates;i++)
+    {
+        printf("%s\t",voters[i-1].name);
+        printf("%s\t\t",candidates[i-1].name);
     }
 }
+
 void main()
 {
     system("cls");
