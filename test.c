@@ -17,7 +17,6 @@ typedef struct Candidate
 }candidate;
 
 char password[20];
-char ll[100][100];
 int num_voters,num_candidates;
 int admin_f=0,voter_f=0;
 candidate *candidates;
@@ -37,7 +36,7 @@ void AdminMode()
         {
             printf("incorrect password! try again\n");
             fflush(stdin);
-            printf("Press any key to continue ");
+            printf("Press any key to continue \n");
             scanf("%c");
             fail=1;
         }
@@ -60,7 +59,7 @@ void AdminMode()
         printf("\nEnter voting candidates:\n");
         for(int i=1;i<=num_candidates;i++)
         {
-    
+
             printf("%d. ",i);
             fflush(stdin);
             scanf("%[^\n]s",candidates[i-1].name);
@@ -74,7 +73,7 @@ void AdminMode()
         {
             printf("%d. %s\n",i,candidates[i-1].name);
         }
-        printf("Press any key to continue");
+        printf("Press any key to continue\n");
         fflush(stdin);
         scanf("%c",&ch);
         admin_f=1;
@@ -87,7 +86,6 @@ void VotingMode()
     char ch;
     system("cls");
     printf("\n");
-    int cc=0;
     for(int no=0;no<num_voters;no++)
     {
         system("cls");
@@ -98,21 +96,31 @@ void VotingMode()
         {
             printf("%d. %s\n",i+1,candidates[i].name);
         }
-        printf("Your vote here: ");
-        scanf("%d",&voters[no].vote);
-        printf("Press Y to confirm vote, or n to redo vote: ");
-        fflush(stdin);
-        scanf("%c",&ch);
-        if(ch=='n')
+        int tm;
+        while(1)
         {
-            no--;
-            continue;
+            while(1){
+                printf("\nYour vote here: ");
+                scanf("%d",&tm);
+                if (tm>0 && tm<=num_candidates) break;
+                else printf("Please enter a valid input\n");
+            }
+
+            while(1){
+                printf("Press Y to confirm vote, or n to redo vote: ");
+                fflush(stdin);
+                scanf("%c",&ch);
+                ch=toupper(ch);
+                if(ch=='Y' || ch=='N') break;
+                else printf("\nPlease enter valid inputs\n");
+            }
+            if(ch=='Y')
+            {
+                voters[no].vote=tm;
+                candidates[voters[no].vote-1].number++;
+                break;
+            }
         }
-        else candidates[voters[no].vote-1].number++;
-        
-        //strcpy(ll[cc],voters[no].name);
-        //strcpy(ll[cc+1],candidates[voters[no].vote-1].name);
-        cc=cc+2;
     }
     voter_f=1;
     system("cls");
@@ -128,24 +136,55 @@ void DisplayResults()
     }
     printf("\n");
     fflush(stdin);
-    printf("Press any key to continue ");
+    printf("Press any key to continue \n");
     scanf("%c",&ch);
     system("cls");
 }
 
 void DV()
 {
-    /*int jj=0;
-    while(ll[jj])
+    char cm;
+    printf("Voter->Vote\n\n");
+    for(int i=0;i<num_voters;i++)
     {
-        printf("%s  ",ll[jj]);
-        ++jj;
-        if((jj%2)==0) printf("\n");
-    }*/
-    for(int i=1;i<=num_candidates;i++)
-    {
-        printf("%s\t",voters[i-1].name);
-        printf("%s\t\t",candidates[i-1].name);
+        printf("%s ->",voters[i].name);
+        printf("%s\n",candidates[voters[i].vote-1].name);
+    }
+    fflush(stdin);
+    printf("Press Y to save results in file or press any other key to continue:");
+    scanf("%c",&cm);
+    cm=toupper(cm);
+    if(cm=='Y'){
+        FILE *fptr;
+        fptr = fopen("voting.txt","w");
+        char rxy[]="Voter->Vote";
+        int inm=0;
+        while(rxy[inm]!='\0')
+        {
+            fputc(rxy[inm],fptr);
+            inm++;
+        }
+        fputc('\n',fptr);
+        fputc('\n',fptr);
+        for(int i=0;i<num_voters;i++)
+        {
+            char x[100];
+            strcpy(x,voters[i].name);
+            char y[100];
+            strcpy(y,candidates[voters[i].vote-1].name);
+            char m[]="->";
+            strcat(x,m);
+            strcat(x,y);
+            int jm=0;
+            while(x[jm]!='\0')
+            {
+                fputc(x[jm],fptr);
+                jm++;
+            }
+            fputc('\n',fptr);
+        }
+
+        fclose(fptr);
     }
 }
 
