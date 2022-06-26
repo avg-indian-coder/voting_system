@@ -59,6 +59,7 @@ void AdminMode()
         printf("\nEnter voting candidates:\n");
         for(int i=1;i<=num_candidates;i++)
         {
+
             printf("%d. ",i);
             fflush(stdin);
             scanf("%[^\n]s",candidates[i-1].name);
@@ -85,6 +86,7 @@ void VotingMode()
     char ch;
     system("cls");
     printf("\n");
+    int cc=0;
     for(int no=0;no<num_voters;no++)
     {
         system("cls");
@@ -106,6 +108,7 @@ void VotingMode()
             continue;
         }
         else candidates[voters[no].vote-1].number++;
+        cc=cc+2;
     }
     voter_f=1;
     system("cls");
@@ -113,6 +116,7 @@ void VotingMode()
 
 void DisplayResults()
 {
+    char ch;
     system("cls");
     for(int i=0;i<num_candidates;i++)
     {
@@ -121,8 +125,55 @@ void DisplayResults()
     printf("\n");
     fflush(stdin);
     printf("Press any key to continue ");
-    scanf("%c");
+    scanf("%c",&ch);
     system("cls");
+}
+
+void DV()
+{
+    char cm;
+    printf("Voter->Vote\n\n");
+    for(int i=0;i<num_voters;i++)
+    {
+        printf("%s ->",voters[i].name);
+        printf("%s\n",candidates[voters[i].vote-1].name);
+    }
+    fflush(stdin);
+    printf("Press Y to save results in file or press any other key to continue:");
+    scanf("%c",&cm);
+    printf("\n%c",cm);
+    if(cm=='Y'){
+        FILE *fptr;
+        fptr = fopen("voting.txt","w");
+        char rxy[]="Voter->Vote";
+        int inm=0;
+        while(rxy[inm]!='\0')
+        {
+            fputc(rxy[inm],fptr);
+            inm++;
+        }
+        fputc('\n',fptr);
+        fputc('\n',fptr);
+        for(int i=0;i<num_voters;i++)
+        {
+            char x[100];
+            strcpy(x,voters[i].name);
+            char y[100];
+            strcpy(y,candidates[voters[i].vote-1].name);
+            char m[]="->";
+            strcat(x,m);
+            strcat(x,y);
+            int jm=0;
+            while(x[jm]!='\0')
+            {
+                fputc(x[jm],fptr);
+                jm++;
+            }
+            fputc('\n',fptr);
+        }
+
+        fclose(fptr);
+    }
 }
 
 void main()
@@ -131,10 +182,10 @@ void main()
     while(1)
     {
         int choice;
-        printf("\n1.Admin mode\n2.Voting mode\n3.Results display\n4.Exit\n");
+        printf("\n1.Admin mode\n2.Voting mode\n3.Results display\n4.Detailed View\n5.Exit\n");
         printf("Enter your choice: ");
         scanf("%d",&choice);
-        if(choice==4) break;
+        if(choice==5) break;
         switch(choice)
         {
             case 1:
@@ -142,7 +193,7 @@ void main()
             break;
             case 2:
             if(admin_f) VotingMode();
-            else 
+            else
             {
                 printf("Admin not initialized!");
                 fflush(stdin);
@@ -152,7 +203,17 @@ void main()
             break;
             case 3:
             if(admin_f && voter_f) DisplayResults();
-            else 
+            else
+            {
+                printf("Admin or voting not done!");
+                fflush(stdin);
+                printf("Press any key to continue ");
+                scanf("%c");
+            }
+            break;
+            case 4:
+            if(admin_f && voter_f) DV();
+            else
             {
                 printf("Admin or voting not done!");
                 fflush(stdin);
